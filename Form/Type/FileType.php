@@ -6,23 +6,14 @@ use Symfony\Component\Form\AbstractType;
 use Iphp\FileStoreBundle\FileStorage\FileStorageInterface;
 use Iphp\FileStoreBundle\DataStorage\DataStorageInterface;
 use Iphp\FileStoreBundle\Mapping\PropertyMappingFactory;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\Exception\CreationException;
 use Symfony\Component\Form\FormView;
 
-
-use Symfony\Component\Form\ReversedTransformer;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Iphp\FileStoreBundle\Form\DataTransformer\FileDataTransformer;
-use Iphp\FileStoreBundle\Form\DataTransformer\FileDataViewTransformer;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 /**
  * @author Vitiko <vitiko@mail.ru>
@@ -54,7 +45,7 @@ class FileType extends AbstractType
         $this->fileStorage = $fileStorage;
     }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'read_only' => false,
@@ -64,6 +55,11 @@ class FileType extends AbstractType
         ));
     }
 
+    // BC for SF < 2.7
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $this->configureOptions($resolver);
+    }
 
     /**
      * {@inheritdoc}
@@ -107,15 +103,17 @@ class FileType extends AbstractType
     {
         return 'form';
     }
-
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'iphp_file';
     }
+
+    // BC for SF < 2.8
+    public function getName()
+    {
+        return $this->getBlockPrefix();
+    }
 }
-
-
-
