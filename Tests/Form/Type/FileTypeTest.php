@@ -65,7 +65,7 @@ class FileTypeTest extends \PHPUnit_Framework_TestCase
     function testSetDefaultOptions()
     {
 
-        $resolver = $this->getMockBuilder('Symfony\Component\OptionsResolver\OptionsResolverInterface')
+        $resolver = $this->getMockBuilder('Symfony\Component\OptionsResolver\OptionsResolver')
             ->disableOriginalConstructor()
             ->getMock();
 
